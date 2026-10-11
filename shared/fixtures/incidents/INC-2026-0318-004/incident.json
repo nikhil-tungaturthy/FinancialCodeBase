@@ -1,0 +1,72 @@
+{
+  "incident_id": "INC-2026-0318-004",
+  "opened_at": "2026-03-18T01:42:17Z",
+  "severity": "SEV2",
+  "status": "OPEN",
+  "service": "meridian-batch/settlement",
+  "title": "Settlement reconciliation variance on SB-20260317-SEPA-02",
+  "affected_batch": "SB-20260317-SEPA-02",
+  "affected_payments": [
+    "MGB-PAY-5143",
+    "MGB-PAY-5140",
+    "MGB-PAY-5147"
+  ],
+  "correlation_id": "corr-settle-20260318-sepa02",
+  "symptoms": [
+    "Reconciliation run RR-000061 for SB-20260317-SEPA-02 (SEPA_EUR, value date 2026-03-17) recorded recorded_total 253,817.00 EUR against expected_total 235,367.00 EUR; variance +18,450.00 EUR.",
+    "Two ledger principal credits to 2010-NOSTRO-EUR exist for settlement entry SE-000388 / payment MGB-PAY-5143 (EUR 18,450.00): LE-002448 under journal JRN-000612 (posted 2026-03-18T01:17:03.412Z) and LE-002452 under journal JRN-000613 (posted 2026-03-18T01:17:09.118Z).",
+    "The ledger posting run that started at 2026-03-18T01:15:00Z logged one db.operation_timeout (sqlite3.OperationalError: database is locked, operation audit_events.insert, attempt 1) for SE-000388, followed by ledger.retry attempt=2 and a second ledger.posted line for the same entry.",
+    "The posting run summary for SB-20260317-SEPA-02 reports posted_count=18 for entry_count=17 (retries=1, failures=0); the job exited 0.",
+    "Reconciliation lists 2 unmatched refs (LE-002448, LE-002452) and 16 matched entries; the batch transitioned SETTLED -> DISCREPANCY at 2026-03-18T01:42:16.814Z and its 17 payments remain in status SETTLED.",
+    "Adjacent entries SE-000387 (MGB-PAY-5140) and SE-000389 (MGB-PAY-5147) were posted immediately before and after the failed attempt; both have exactly one principal credit and were added to the affected list for manual verification by the on-call analyst.",
+    "Fee legs (1100-CUST-EUR debit, 4100-FEE-INCOME-EUR credit) were also posted under both JRN-000612 and JRN-000613; the baseline reconciliation compares principal credits only."
+  ],
+  "evidence": {
+    "logs": [
+      "settlement-run.jsonl",
+      "reconciliation-run.jsonl"
+    ],
+    "repo_paths": [
+      "services/batch/batch/settlement/ledger_poster.py",
+      "services/batch/batch/reconciliation/daily_reconciliation.py",
+      "services/api/app/models/ledger.py"
+    ]
+  },
+  "runbook": "docs/operations/runbooks/settlement-variance.md",
+  "automation": {
+    "suggested_instruction_ref": "docs/integrations/automations.md"
+  },
+  "opened_by": "system",
+  "updated_at": "2026-03-18T07:05:49Z",
+  "updated_by": "aisha.bello",
+  "reconciliation": {
+    "run_ref": "RR-000061",
+    "run_at": "2026-03-18T01:42:16.759Z",
+    "status": "UNMATCHED",
+    "currency": "EUR",
+    "expected_total": "235367.00",
+    "recorded_total": "253817.00",
+    "variance": "18450.00",
+    "matched_count": 16,
+    "unmatched_count": 2,
+    "unmatched_refs": [
+      "LE-002448",
+      "LE-002452"
+    ],
+    "settlement_entry_count": 17,
+    "ledger_principal_credit_count": 18
+  },
+  "related_refs": {
+    "settlement_entry": "SE-000388",
+    "journal_refs": [
+      "JRN-000612",
+      "JRN-000613"
+    ],
+    "ledger_entry_refs": [
+      "LE-002448",
+      "LE-002452"
+    ],
+    "posting_run_started_at": "2026-03-18T01:15:00.084Z",
+    "reconciliation_run_started_at": "2026-03-18T01:42:00.917Z"
+  }
+}

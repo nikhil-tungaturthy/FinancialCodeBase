@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Product tickets (MGB backlog)
+    url: https://github.com/meridian-flow/meridian-flow/tree/main/docs/product/tickets
+    about: Demo work items are tracked as MGB-xxx tickets in docs/product/tickets. Check there before opening a new issue.
+  - name: Local development guide
+    url: https://github.com/meridian-flow/meridian-flow/blob/main/docs/operations/local-development.md
+    about: Setup, ports, make targets and troubleshooting for the local environment.
+  - name: Security reports
+    url: https://github.com/meridian-flow/meridian-flow/blob/main/SECURITY.md
+    about: Please report security issues privately as described in SECURITY.md, not as public issues.

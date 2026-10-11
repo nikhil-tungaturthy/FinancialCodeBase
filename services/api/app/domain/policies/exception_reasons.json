@@ -1,0 +1,188 @@
+{
+  "version": "2026.03",
+  "comment": "Exception reason policy for Meridian Flow. legacy_code is the HOLDXTRT code from the retired Payments Review Desk. Reasons without a legacy_code were introduced after the desk was retired.",
+  "reasons": [
+    {
+      "reason_code": "BENEFICIARY_NAME_MISMATCH",
+      "title": "Beneficiary name does not match the registered record",
+      "description": "The name on the payment instruction does not match the beneficiary legal name held on the customer record. The payment is held so operations can confirm which name the customer intended before the funds are released.",
+      "default_severity": "HIGH",
+      "sla_minutes": 120,
+      "requires_approval_for_release": true,
+      "approval_role": "SUPERVISOR",
+      "approval_amount_threshold_usd": "100000.00",
+      "allowed_actions": ["REPAIR_AND_RELEASE", "RETURN_TO_CUSTOMER", "CANCEL_PAYMENT", "ESCALATE"],
+      "required_evidence": [
+        "Registered beneficiary legal name",
+        "Instructed beneficiary name from the payment",
+        "Customer or relationship-manager confirmation of the correct name"
+      ],
+      "owner_team": "Payments Operations",
+      "legacy_code": "R03"
+    },
+    {
+      "reason_code": "INVALID_ACCOUNT_IDENTIFIER",
+      "title": "Beneficiary account identifier is invalid",
+      "description": "The account identifier on the instruction does not match a registered beneficiary account, or it fails the rail's format check.",
+      "default_severity": "HIGH",
+      "sla_minutes": 120,
+      "requires_approval_for_release": true,
+      "approval_role": "SUPERVISOR",
+      "approval_amount_threshold_usd": "100000.00",
+      "allowed_actions": ["REPAIR_AND_RELEASE", "RETURN_TO_CUSTOMER", "CANCEL_PAYMENT", "ESCALATE"],
+      "required_evidence": [
+        "Registered account identifier",
+        "Instructed account identifier",
+        "Confirmation the account is still open"
+      ],
+      "owner_team": "Payments Operations",
+      "legacy_code": "R01"
+    },
+    {
+      "reason_code": "MISSING_BENEFICIARY_BIC",
+      "title": "Beneficiary BIC is missing",
+      "description": "A cross-border or correspondent payment was received without a BIC the rail can route on.",
+      "default_severity": "MEDIUM",
+      "sla_minutes": 240,
+      "requires_approval_for_release": false,
+      "approval_role": null,
+      "approval_amount_threshold_usd": null,
+      "allowed_actions": ["REPAIR_AND_RELEASE", "RETURN_TO_CUSTOMER", "CANCEL_PAYMENT", "ESCALATE"],
+      "required_evidence": ["Beneficiary bank name", "BIC supplied by the customer"],
+      "owner_team": "Payments Operations",
+      "legacy_code": "R02"
+    },
+    {
+      "reason_code": "DUPLICATE_REFERENCE",
+      "title": "Possible duplicate end-to-end reference",
+      "description": "Another payment for the same customer already uses this end-to-end reference. The hold stops a second settlement of the same instruction.",
+      "default_severity": "HIGH",
+      "sla_minutes": 60,
+      "requires_approval_for_release": true,
+      "approval_role": "SUPERVISOR",
+      "approval_amount_threshold_usd": "100000.00",
+      "allowed_actions": ["RELEASE_AS_IS", "CANCEL_PAYMENT", "ESCALATE"],
+      "required_evidence": [
+        "The earlier payment reference",
+        "Confirmation this instruction is a new payment and not a replay"
+      ],
+      "owner_team": "Payments Operations",
+      "legacy_code": "R04"
+    },
+    {
+      "reason_code": "AMOUNT_LIMIT_EXCEEDED",
+      "title": "Amount exceeds the customer daily limit",
+      "description": "The USD equivalent exceeds the customer's configured daily payment limit.",
+      "default_severity": "HIGH",
+      "sla_minutes": 120,
+      "requires_approval_for_release": true,
+      "approval_role": "PAYMENTS_MANAGER",
+      "approval_amount_threshold_usd": null,
+      "allowed_actions": ["RELEASE_AS_IS", "RETURN_TO_CUSTOMER", "CANCEL_PAYMENT", "ESCALATE"],
+      "required_evidence": ["Customer daily limit", "USD equivalent of this payment"],
+      "owner_team": "Payments Operations",
+      "legacy_code": "R05"
+    },
+    {
+      "reason_code": "CUTOFF_MISSED",
+      "title": "Settlement cutoff was missed",
+      "description": "The payment arrived after the rail cutoff for the requested value date and was rolled forward.",
+      "default_severity": "MEDIUM",
+      "sla_minutes": 240,
+      "requires_approval_for_release": false,
+      "approval_role": null,
+      "approval_amount_threshold_usd": null,
+      "allowed_actions": ["RELEASE_AS_IS", "CANCEL_PAYMENT", "ESCALATE"],
+      "required_evidence": ["Requested value date", "Assigned value date", "Rail cutoff"],
+      "owner_team": "Settlement & Reconciliation",
+      "legacy_code": "R06"
+    },
+    {
+      "reason_code": "SCREENING_REVIEW",
+      "title": "Screening review required",
+      "description": "The payment matched a screening indicator and must be reviewed by Financial Crime Risk before it can move.",
+      "default_severity": "CRITICAL",
+      "sla_minutes": 60,
+      "requires_approval_for_release": true,
+      "approval_role": "RISK_OFFICER",
+      "approval_amount_threshold_usd": null,
+      "allowed_actions": ["RELEASE_AS_IS", "RETURN_TO_CUSTOMER", "CANCEL_PAYMENT", "ESCALATE"],
+      "required_evidence": [
+        "Screening case reference",
+        "Disposition from Financial Crime Risk"
+      ],
+      "owner_team": "Financial Crime Risk",
+      "legacy_code": "R07"
+    },
+    {
+      "reason_code": "INSUFFICIENT_FUNDS",
+      "title": "Insufficient available balance",
+      "description": "The debit account does not have enough available balance to cover the principal and the fee.",
+      "default_severity": "MEDIUM",
+      "sla_minutes": 180,
+      "requires_approval_for_release": false,
+      "approval_role": null,
+      "approval_amount_threshold_usd": null,
+      "allowed_actions": ["RELEASE_AS_IS", "CANCEL_PAYMENT", "RETURN_TO_CUSTOMER"],
+      "required_evidence": ["Available balance", "Principal plus fee"],
+      "owner_team": "Payments Operations",
+      "legacy_code": "R08"
+    },
+    {
+      "reason_code": "STALE_VALUE_DATE",
+      "title": "Value date is stale",
+      "description": "The requested value date is in the past relative to the scenario clock and the rail calendar.",
+      "default_severity": "LOW",
+      "sla_minutes": 480,
+      "requires_approval_for_release": false,
+      "approval_role": null,
+      "approval_amount_threshold_usd": null,
+      "allowed_actions": ["REPAIR_AND_RELEASE", "CANCEL_PAYMENT"],
+      "required_evidence": ["Requested value date", "Earliest eligible value date"],
+      "owner_team": "Payments Operations",
+      "legacy_code": "R09"
+    },
+    {
+      "reason_code": "MISSING_PURPOSE_CODE",
+      "title": "Purpose code is missing",
+      "description": "The rail requires a purpose code and the instruction did not include one.",
+      "default_severity": "MEDIUM",
+      "sla_minutes": 240,
+      "requires_approval_for_release": false,
+      "approval_role": null,
+      "approval_amount_threshold_usd": null,
+      "allowed_actions": ["REPAIR_AND_RELEASE", "RETURN_TO_CUSTOMER", "CANCEL_PAYMENT"],
+      "required_evidence": ["Rail purpose-code requirement", "Code supplied by the customer"],
+      "owner_team": "Payments Operations",
+      "legacy_code": "R10"
+    },
+    {
+      "reason_code": "UNSUPPORTED_CURRENCY_RAIL",
+      "title": "Currency is not supported on this rail",
+      "description": "The instructed currency cannot be settled on the selected rail.",
+      "default_severity": "HIGH",
+      "sla_minutes": 120,
+      "requires_approval_for_release": true,
+      "approval_role": "SUPERVISOR",
+      "approval_amount_threshold_usd": "100000.00",
+      "allowed_actions": ["RETURN_TO_CUSTOMER", "CANCEL_PAYMENT", "ESCALATE"],
+      "required_evidence": ["Instructed currency", "Currencies the rail accepts"],
+      "owner_team": "Payments Platform Engineering",
+      "legacy_code": "R11"
+    },
+    {
+      "reason_code": "FX_QUOTE_EXPIRED",
+      "title": "Foreign-exchange quote has expired",
+      "description": "The quote used to price a cross-currency payment expired before the payment was released. There is no legacy desk code for this reason.",
+      "default_severity": "MEDIUM",
+      "sla_minutes": 30,
+      "requires_approval_for_release": false,
+      "approval_role": null,
+      "approval_amount_threshold_usd": null,
+      "allowed_actions": ["RELEASE_AS_IS", "CANCEL_PAYMENT", "ESCALATE"],
+      "required_evidence": ["Quote reference", "Quote expiry time", "Current scenario reference rate"],
+      "owner_team": "Treasury Operations",
+      "legacy_code": null
+    }
+  ]
+}

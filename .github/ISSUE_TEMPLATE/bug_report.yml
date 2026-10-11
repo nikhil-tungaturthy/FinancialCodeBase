@@ -1,0 +1,101 @@
+name: Bug report
+description: Report a defect in the API, batch jobs, web app, legacy components or tooling.
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Meridian Flow runs on synthetic data only: never paste real payment,
+        customer, account or credential data into an issue. Use the seeded references
+        (for example `MGB-PAY-1042`, `MGB-EXC-0231`, `SB-20260317-SEPA-02`) instead.
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Where does the problem show up?
+      options:
+        - API (services/api)
+        - Batch jobs (services/batch)
+        - Web app (apps/web)
+        - Seed / synthetic data
+        - Legacy components (legacy/, reference implementations)
+        - Policies (exception reasons, cutoffs, business rules, fee schedules)
+        - Tooling, scripts or CI
+        - Documentation
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the observed behaviour. Include the HTTP status, error title and `correlation_id` for API errors.
+      placeholder: "POST /api/v1/exceptions/MGB-EXC-0231/actions returned 409 with ..."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+      description: Reference the rule, policy or ticket that defines the expected behaviour where possible.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Start from a fresh seed (`make demo-reset FORCE=1`) when the state matters. Mention the demo identity (`X-Demo-User`) used.
+      placeholder: |
+        1. make demo-reset FORCE=1 && make dev
+        2. Sign in as marcus.okafor
+        3. Open /exceptions/MGB-EXC-0231 and click ...
+    validations:
+      required: true
+  - type: input
+    id: references
+    attributes:
+      label: Related references
+      description: payment_ref, exception_ref, batch_ref, approval_ref, incident_ref or journal_ref involved.
+      placeholder: "MGB-PAY-5143, SB-20260317-SEPA-02, JRN-000612"
+  - type: dropdown
+    id: financial-impact
+    attributes:
+      label: Financial-impact category
+      description: Pick the closest category; it drives triage priority.
+      options:
+        - None / cosmetic
+        - Amount, currency or rounding
+        - Lifecycle transition or status
+        - Audit trail or correlation
+        - Settlement window, cutoff or timezone
+        - Reconciliation or ledger posting
+        - Approval or role enforcement
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant structured log lines
+      description: Paste JSON log lines (`MF_LOG_FORMAT=json`) or the console output. Trim unrelated lines.
+      render: json
+  - type: input
+    id: version
+    attributes:
+      label: Commit or branch
+      description: Output of `git rev-parse --short HEAD` and the branch name.
+      placeholder: "a1b2c3d on main"
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python (`uv run python --version`), Node (`node --version`), browser for UI issues.
+      placeholder: "macOS 15, Python 3.12.x, Node 24.x, Chrome 1xx"
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmations
+      options:
+        - label: This report contains no real customer, counterparty or credential data.
+          required: true
+        - label: I searched existing issues and the MGB tickets in docs/product/tickets for duplicates.
+          required: true

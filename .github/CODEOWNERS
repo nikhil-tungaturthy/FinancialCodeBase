@@ -1,0 +1,36 @@
+# Meridian Flow code owners
+#
+# NOTE: the @meridian-flow/* handles are PLACEHOLDER TEAM HANDLES for the fictional demo
+# organisation. GitHub only assigns reviews to teams that exist in the organisation and have
+# write access to the repository; replace them with real teams when forking this project.
+#
+# Rules: gitignore-style patterns, the LAST matching pattern wins, paths are case-sensitive.
+# Keep the catch-all first and the specific paths below it.
+
+*                                       @meridian-flow/platform-engineering
+
+# Backend services, shared contracts and fixtures
+/services/                              @meridian-flow/payments-platform
+/shared/                                @meridian-flow/payments-platform
+
+# Policy JSON changes shape exception handling and approvals: platform + architecture review
+/services/api/app/domain/policies/      @meridian-flow/payments-platform @meridian-flow/architecture
+
+# Web application
+/apps/web/                              @meridian-flow/payments-experience
+
+# Legacy COBOL / VB6 components, their golden fixtures and the Python reference implementations
+/legacy/                                @meridian-flow/legacy-modernization
+/services/api/app/integrations/legacy/  @meridian-flow/legacy-modernization @meridian-flow/payments-platform
+
+# Architecture documentation and ADRs
+/docs/architecture/                     @meridian-flow/architecture
+
+# Repository tooling, CI and developer scripts
+/.github/                               @meridian-flow/platform-engineering
+/scripts/                               @meridian-flow/platform-engineering
+/Makefile                               @meridian-flow/platform-engineering
+/pyproject.toml                         @meridian-flow/platform-engineering
+/package.json                           @meridian-flow/platform-engineering
+/uv.lock                                @meridian-flow/platform-engineering
+/package-lock.json                      @meridian-flow/platform-engineering

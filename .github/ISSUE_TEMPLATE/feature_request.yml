@@ -1,0 +1,78 @@
+name: Feature request
+description: Propose a change to behaviour, policy, UI or tooling.
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Product work is tracked as MGB tickets in `docs/product/tickets/`. If a ticket already
+        covers your idea, comment there or reference it below instead of opening a duplicate.
+  - type: input
+    id: ticket
+    attributes:
+      label: Related MGB ticket
+      description: Leave empty if none exists yet.
+      placeholder: "MGB-142"
+  - type: textarea
+    id: problem
+    attributes:
+      label: Business problem
+      description: Who is affected (analyst, supervisor, payments manager, risk officer, engineer) and what cannot be done today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Requested behavior
+      description: Describe the behaviour you want, including API shape, UI placement or batch semantics as relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Verifiable statements; one per line.
+      placeholder: |
+        - GET /api/v1/... returns ...
+        - The exception detail panel shows ...
+        - An AuditEvent with action ... is recorded
+    validations:
+      required: true
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
+      description: What this request deliberately does not cover.
+  - type: dropdown
+    id: areas
+    attributes:
+      label: Areas affected
+      multiple: true
+      options:
+        - API (services/api)
+        - Batch jobs (services/batch)
+        - Web app (apps/web)
+        - Policies (exception reasons, cutoffs, business rules, fee schedules)
+        - Seed / synthetic data
+        - Legacy components
+        - Docs / tooling / CI
+    validations:
+      required: true
+  - type: checkboxes
+    id: financial
+    attributes:
+      label: Financial considerations
+      description: Tick everything the change touches so reviewers can plan the checks.
+      options:
+        - label: Amounts, currencies or rounding
+        - label: Payment, exception, approval or batch lifecycle transitions
+        - label: Audit events or correlation ids
+        - label: Settlement windows, cutoffs or timezones
+        - label: Reconciliation or ledger postings
+        - label: Role checks or segregation of duties
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Alternatives considered, references, screenshots or sketches.

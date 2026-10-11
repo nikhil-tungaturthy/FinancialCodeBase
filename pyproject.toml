@@ -1,0 +1,65 @@
+[project]
+name = "meridian-flow-workspace"
+version = "0.1.0"
+description = "Meridian Flow — Global Payments & Exception Operations (uv workspace root)"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "meridian-api",
+  "meridian-batch",
+]
+
+[tool.uv.workspace]
+members = ["services/api", "services/batch"]
+
+[tool.uv.sources]
+meridian-api = { workspace = true }
+meridian-batch = { workspace = true }
+
+[dependency-groups]
+dev = [
+  "pytest>=9.0,<10",
+  "pytest-cov>=7.0,<8",
+  "httpx>=0.28,<0.29",
+  "ruff>=0.17,<0.18",
+  "mypy>=2.4,<3",
+  "freezegun>=1.5,<2",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["services/api/tests", "services/batch/tests", "legacy/reference-tests"]
+addopts = "-ra --strict-markers"
+markers = [
+  "integration: tests that exercise the API against a seeded database",
+  "legacy: golden-master tests for legacy COBOL/VB6 reference behaviour",
+]
+filterwarnings = ["error::DeprecationWarning:app.*", "error::DeprecationWarning:batch.*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["services/api", "services/batch"]
+extend-exclude = ["apps", "legacy/cobol", "legacy/vb6", "node_modules", ".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "N", "W", "SIM", "RUF", "DTZ"]
+ignore = ["RUF012", "B008"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**" = ["DTZ"]
+"legacy/reference-tests/**" = ["DTZ"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+plugins = ["pydantic.mypy"]
+mypy_path = ["services/api", "services/batch"]
+explicit_package_bases = true
+namespace_packages = true
+
+[[tool.mypy.overrides]]
+module = ["structlog.*", "typer.*", "rich.*"]
+ignore_missing_imports = true

@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+coverage.xml
+*.egg-info/
+build/
+
+# Node
+node_modules/
+apps/web/dist/
+apps/web/coverage/
+apps/web/test-results/
+apps/web/playwright-report/
+apps/web/blob-report/
+apps/web/.vite/
+
+# Local data & env (synthetic demo database lives here)
+data/*.db
+data/*.db-journal
+data/*.db-wal
+data/*.db-shm
+.env
+.env.local
+
+# Legacy build outputs
+legacy/cobol/build/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Demo worktrees are created outside the repo; never inside
+.worktrees/
+
+# Presenter-only materials must never be committed
+meridian-flow-demo-kit/
+*.presenter-only.*

@@ -1,0 +1,215 @@
+# Meridian Flow continuous integration.
+#
+# Jobs:
+#   backend   ruff check + format, mypy (strict), pytest with coverage (services/api, services/batch)
+#   frontend  eslint, tsc, vitest, vite build (artifact: web-dist)
+#   e2e       seeds the scenario DB, starts the API and the Vite dev server, runs Playwright (Chromium)
+#   legacy    installs GnuCOBOL and runs the legacy golden-master tests (COBOL compiled and executed)
+#
+# Runner: ubuntu-24.04 is pinned on purpose; `ubuntu-latest` migrates to Ubuntu 26.04 between
+# 2026-10-19 and 2026-11-19 and the default system Python/Node change with it.
+# astral-sh/setup-uv publishes no floating major tags since v8, hence the commit SHA pin.
+
+name: CI
+
+on:
+  push:
+    branches: [main, "demo/**"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VERSION: "3.12"
+  NODE_VERSION: "22"
+  FORCE_COLOR: "1"
+  MF_LOG_FORMAT: json
+
+jobs:
+  backend:
+    name: Backend (ruff, mypy, pytest)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out
+        uses: actions/checkout@v7
+
+      - name: Set up uv and Python ${{ env.PYTHON_VERSION }}
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          enable-cache: true
+
+      - name: Install workspace (uv sync)
+        run: uv sync --locked
+
+      - name: Ruff check
+        run: uv run ruff check .
+
+      - name: Ruff format check
+        run: uv run ruff format --check .
+
+      - name: mypy
+        run: uv run mypy services/api/app services/batch/batch
+
+      - name: pytest with coverage
+        run: >
+          uv run pytest services/api services/batch -q
+          --cov=app --cov=batch
+          --cov-report=xml:coverage.xml
+          --cov-report=term-missing:skip-covered
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: backend-coverage
+          path: coverage.xml
+          if-no-files-found: warn
+          retention-days: 14
+
+  frontend:
+    name: Frontend (eslint, tsc, vitest, build)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out
+        uses: actions/checkout@v7
+
+      - name: Set up Node ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install (npm ci)
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint -w apps/web
+
+      - name: Typecheck
+        run: npm run typecheck -w apps/web
+
+      - name: Unit tests (vitest)
+        run: npm run test -w apps/web -- --run
+
+      - name: Build
+        run: npm run build -w apps/web
+
+      - name: Upload build
+        uses: actions/upload-artifact@v7
+        with:
+          name: web-dist
+          path: apps/web/dist
+          if-no-files-found: error
+          retention-days: 14
+
+  e2e:
+    name: End-to-end (Playwright)
+    needs: [backend, frontend]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      API_PORT: "8000"
+      WEB_PORT: "5173"
+    steps:
+      - name: Check out
+        uses: actions/checkout@v7
+
+      - name: Set up uv and Python ${{ env.PYTHON_VERSION }}
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          enable-cache: true
+
+      - name: Set up Node ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install workspace (uv sync)
+        run: uv sync --locked
+
+      - name: Install (npm ci)
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Seed the scenario database
+        run: |
+          uv run python -m app.seed.cli seed
+          uv run python -m app.seed.cli verify
+
+      - name: Start the API
+        run: |
+          nohup uv run uvicorn app.main:app --app-dir services/api --port "$API_PORT" > api.log 2>&1 &
+          echo "api pid $!"
+
+      - name: Start the web dev server
+        run: |
+          nohup npm run dev -w apps/web > web.log 2>&1 &
+          echo "web pid $!"
+
+      - name: Wait for readiness
+        run: bash scripts/wait_for_ready.sh 120
+
+      - name: Run end-to-end tests
+        run: npm run test:e2e -w apps/web
+
+      - name: Show server logs
+        if: failure()
+        run: |
+          echo "::group::api.log"; tail -n 200 api.log || true; echo "::endgroup::"
+          echo "::group::web.log"; tail -n 200 web.log || true; echo "::endgroup::"
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: |
+            apps/web/playwright-report
+            apps/web/test-results
+            api.log
+            web.log
+          if-no-files-found: ignore
+          retention-days: 14
+
+  legacy:
+    name: Legacy golden tests (GnuCOBOL)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out
+        uses: actions/checkout@v7
+
+      - name: Install GnuCOBOL
+        # Ubuntu 24.04 ships `gnucobol` as a metapackage on `gnucobol3` (GnuCOBOL 3.1.2);
+        # the versioned name is the fallback for images where the metapackage is absent.
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends gnucobol \
+            || sudo apt-get install -y -qq --no-install-recommends gnucobol3
+          cobc --version
+
+      - name: Set up uv and Python ${{ env.PYTHON_VERSION }}
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          enable-cache: true
+
+      - name: Install workspace (uv sync)
+        run: uv sync --locked
+
+      - name: Legacy reference tests
+        # -rs prints skip reasons so a missing compiler is visible in the log rather than silent.
+        run: uv run pytest legacy/reference-tests -q -rs

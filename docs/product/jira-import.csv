@@ -1,0 +1,6 @@
+Issue Type,Issue key,Summary,Priority,Description
+Story,MGB-142,Add resolution guidance to payment exceptions,High,"On the exception workbench detail, add a Resolution Guidance section driven by the exception reason policy. See docs/product/tickets/MGB-142.md. Do not hard-code explanations in React."
+Task,MGB-143,Improve guidance layout and visual priority,Medium,"Refine the MGB-142 guidance card: next step first, required information as a checklist, approval called out. Depends on MGB-142. See docs/product/tickets/MGB-143.md."
+Story,MGB-318,Add settlement discrepancy investigation,High,"Classify unmatched settlement rows as missing, duplicate or amount mismatch, and show that on the batch page. Idempotent. See docs/product/tickets/MGB-318.md. Example batch SB-20260317-SEPA-02."
+Bug,MGB-407,Settlement cutoff regression around US daylight saving,Critical,"USD wire cutoff is mis-classified on the review branch when New York is on daylight saving time. Not present on main. See docs/product/tickets/MGB-407.md."
+Incident,MGB-502,Investigate INC-2026-0318-004 settlement variance,High,"SEPA batch SB-20260317-SEPA-02 variance +18450.00 EUR. Evidence in shared/fixtures/incidents/INC-2026-0318-004. See docs/product/tickets/MGB-502.md."

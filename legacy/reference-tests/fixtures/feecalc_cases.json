@@ -1,0 +1,313 @@
+{
+  "schema_version": 1,
+  "program": "FEECALC01",
+  "source": "legacy/cobol/FEECALC01.cbl + legacy/cobol/copybooks/FEESCHED.cpy",
+  "schedule_version": "2026.03.01",
+  "description": "Golden-master cases for the outbound WIRE/SWIFT fee tariff. Amounts and fees are decimal strings at two decimal places. 'rail' is the legacy code (WIRE or SWIFT); the FEEIN encoder pads it to five bytes. Every case was priced by hand from the band table and verified against both the Python reference and the compiled COBOL binary.",
+  "record_layout": {
+    "FEEIN": "amount 9(13)V99 (cols 1-15) | segment X (16) | rail X(5) (17-21)",
+    "FEEOUT": "echo X(21) (1-21) | fee 9(7)V99 (22-30) | band 9 (31) | cap-flag X (32) | status XX (33-34)"
+  },
+  "cases": [
+    {
+      "id": "FC-01",
+      "amount": "0.00",
+      "segment": "C",
+      "rail": "WIRE",
+      "expected_fee": "15.00",
+      "expected_band": 1,
+      "expected_capped": false,
+      "note": "Zero amount still prices at the band 1 base fee"
+    },
+    {
+      "id": "FC-02",
+      "amount": "0.01",
+      "segment": "R",
+      "rail": "WIRE",
+      "expected_fee": "16.50",
+      "expected_band": 1,
+      "expected_capped": false,
+      "note": "Smallest non-zero amount, retail multiplier 1.10 on 15.00"
+    },
+    {
+      "id": "FC-03",
+      "amount": "5000.00",
+      "segment": "C",
+      "rail": "WIRE",
+      "expected_fee": "15.00",
+      "expected_band": 1,
+      "expected_capped": false,
+      "note": "Band 1 interior, corporate multiplier is identity"
+    },
+    {
+      "id": "FC-04",
+      "amount": "9999.99",
+      "segment": "I",
+      "rail": "WIRE",
+      "expected_fee": "12.00",
+      "expected_band": 1,
+      "expected_capped": false,
+      "note": "Band 1 just below the edge, institutional 0.80"
+    },
+    {
+      "id": "FC-05",
+      "amount": "10000.00",
+      "segment": "C",
+      "rail": "WIRE",
+      "expected_fee": "15.00",
+      "expected_band": 1,
+      "expected_capped": false,
+      "note": "Band edge: 10,000.00 is INCLUSIVE in band 1 (no bps)"
+    },
+    {
+      "id": "FC-06",
+      "amount": "10000.01",
+      "segment": "C",
+      "rail": "WIRE",
+      "expected_fee": "26.00",
+      "expected_band": 2,
+      "expected_capped": false,
+      "note": "Band edge: 10,000.01 enters band 2; 1.000001 bps rounds to 1.00"
+    },
+    {
+      "id": "FC-07",
+      "amount": "10050.00",
+      "segment": "C",
+      "rail": "WIRE",
+      "expected_fee": "26.01",
+      "expected_band": 2,
+      "expected_capped": false,
+      "note": "Half-up tie in bps component: 1.005 -> 1.01 (bankers would give 1.00)"
+    },
+    {
+      "id": "FC-08",
+      "amount": "11500.00",
+      "segment": "R",
+      "rail": "WIRE",
+      "expected_fee": "28.77",
+      "expected_band": 2,
+      "expected_capped": false,
+      "note": "Half-up tie in multiplier step: 26.15 x 1.10 = 28.765 -> 28.77"
+    },
+    {
+      "id": "FC-09",
+      "amount": "50000.00",
+      "segment": "C",
+      "rail": "SWIFT",
+      "expected_fee": "42.00",
+      "expected_band": 2,
+      "expected_capped": false,
+      "note": "SWIFT surcharge 12.00 added after the multiplier (30.00 + 12.00)"
+    },
+    {
+      "id": "FC-10",
+      "amount": "75250.50",
+      "segment": "R",
+      "rail": "SWIFT",
+      "expected_fee": "47.78",
+      "expected_band": 2,
+      "expected_capped": false,
+      "note": "Both rounding points active: 7.52505 -> 7.53; 32.53 x 1.10 = 35.783 -> 35.78; +12"
+    },
+    {
+      "id": "FC-11",
+      "amount": "100000.00",
+      "segment": "I",
+      "rail": "WIRE",
+      "expected_fee": "28.00",
+      "expected_band": 2,
+      "expected_capped": false,
+      "note": "Band edge: 100,000.00 is INCLUSIVE in band 2 (25 + 10 = 35) x 0.80"
+    },
+    {
+      "id": "FC-12",
+      "amount": "100000.01",
+      "segment": "I",
+      "rail": "WIRE",
+      "expected_fee": "32.00",
+      "expected_band": 3,
+      "expected_capped": false,
+      "note": "Band edge: 100,000.01 enters band 3; 5.0000005 bps rounds to 5.00"
+    },
+    {
+      "id": "FC-13",
+      "amount": "100100.00",
+      "segment": "C",
+      "rail": "WIRE",
+      "expected_fee": "40.01",
+      "expected_band": 3,
+      "expected_capped": false,
+      "note": "Half-up tie in band 3: 5.005 -> 5.01"
+    },
+    {
+      "id": "FC-14",
+      "amount": "123456.78",
+      "segment": "I",
+      "rail": "WIRE",
+      "expected_fee": "32.94",
+      "expected_band": 3,
+      "expected_capped": false,
+      "note": "Non-tie rounding in both steps: 6.172839 -> 6.17; 41.17 x 0.80 = 32.936 -> 32.94"
+    },
+    {
+      "id": "FC-15",
+      "amount": "480000.00",
+      "segment": "I",
+      "rail": "WIRE",
+      "expected_fee": "47.20",
+      "expected_band": 3,
+      "expected_capped": false,
+      "note": "HERO MGB-PAY-1042: 35.00 + 24.00 = 59.00 x 0.80 = 47.20"
+    },
+    {
+      "id": "FC-16",
+      "amount": "480000.00",
+      "segment": "C",
+      "rail": "WIRE",
+      "expected_fee": "59.00",
+      "expected_band": 3,
+      "expected_capped": false,
+      "note": "Hero amount, corporate: banded fee unchanged by multiplier"
+    },
+    {
+      "id": "FC-17",
+      "amount": "480000.00",
+      "segment": "R",
+      "rail": "WIRE",
+      "expected_fee": "64.90",
+      "expected_band": 3,
+      "expected_capped": false,
+      "note": "Hero amount, retail: 59.00 x 1.10"
+    },
+    {
+      "id": "FC-18",
+      "amount": "480000.00",
+      "segment": "I",
+      "rail": "SWIFT",
+      "expected_fee": "59.20",
+      "expected_band": 3,
+      "expected_capped": false,
+      "note": "Hero amount on SWIFT: 47.20 + 12.00 surcharge"
+    },
+    {
+      "id": "FC-19",
+      "amount": "1000000.00",
+      "segment": "C",
+      "rail": "WIRE",
+      "expected_fee": "85.00",
+      "expected_band": 3,
+      "expected_capped": false,
+      "note": "Band edge: 1,000,000.00 is INCLUSIVE in band 3 (35 + 50)"
+    },
+    {
+      "id": "FC-20",
+      "amount": "1000000.01",
+      "segment": "C",
+      "rail": "WIRE",
+      "expected_fee": "75.00",
+      "expected_band": 4,
+      "expected_capped": false,
+      "note": "Band edge: 1,000,000.01 enters band 4 and the fee DROPS (50 + 25.00)"
+    },
+    {
+      "id": "FC-21",
+      "amount": "1000200.00",
+      "segment": "C",
+      "rail": "WIRE",
+      "expected_fee": "75.01",
+      "expected_band": 4,
+      "expected_capped": false,
+      "note": "Half-up tie in band 4: 25.005 -> 25.01"
+    },
+    {
+      "id": "FC-22",
+      "amount": "2500000.00",
+      "segment": "I",
+      "rail": "SWIFT",
+      "expected_fee": "102.00",
+      "expected_band": 4,
+      "expected_capped": false,
+      "note": "Band 4 interior: 50 + 62.50 = 112.50 x 0.80 = 90.00 + 12.00"
+    },
+    {
+      "id": "FC-23",
+      "amount": "8000000.00",
+      "segment": "C",
+      "rail": "WIRE",
+      "expected_fee": "250.00",
+      "expected_band": 4,
+      "expected_capped": false,
+      "note": "Banded fee exactly equals the cap (50 + 200.00): NOT a cap hit"
+    },
+    {
+      "id": "FC-24",
+      "amount": "8000199.99",
+      "segment": "C",
+      "rail": "WIRE",
+      "expected_fee": "250.00",
+      "expected_band": 4,
+      "expected_capped": false,
+      "note": "Just below the cap tie: 200.00499975 -> 200.00, not capped"
+    },
+    {
+      "id": "FC-25",
+      "amount": "8000200.00",
+      "segment": "C",
+      "rail": "WIRE",
+      "expected_fee": "250.00",
+      "expected_band": 4,
+      "expected_capped": true,
+      "note": "First cap hit: 200.005 -> 200.01 so banded 250.01 > 250.00"
+    },
+    {
+      "id": "FC-26",
+      "amount": "10000000.00",
+      "segment": "R",
+      "rail": "WIRE",
+      "expected_fee": "275.00",
+      "expected_band": 4,
+      "expected_capped": true,
+      "note": "Cap then retail multiplier: 250.00 x 1.10 (multiplier is NOT capped)"
+    },
+    {
+      "id": "FC-27",
+      "amount": "10000000.00",
+      "segment": "I",
+      "rail": "SWIFT",
+      "expected_fee": "212.00",
+      "expected_band": 4,
+      "expected_capped": true,
+      "note": "Cap then institutional multiplier then surcharge: 200.00 + 12.00"
+    },
+    {
+      "id": "FC-28",
+      "amount": "25000000.00",
+      "segment": "C",
+      "rail": "SWIFT",
+      "expected_fee": "262.00",
+      "expected_band": 4,
+      "expected_capped": true,
+      "note": "Surcharge is added after the cap: 250.00 + 12.00"
+    },
+    {
+      "id": "FC-29",
+      "amount": "9999999999999.99",
+      "segment": "R",
+      "rail": "SWIFT",
+      "expected_fee": "287.00",
+      "expected_band": 4,
+      "expected_capped": true,
+      "note": "Maximum PIC 9(13)V99 amount: pre-cap bps 250,000,000.00 (249,999,999.99999975 rounded) then cap"
+    },
+    {
+      "id": "FC-30",
+      "amount": "10000.00",
+      "segment": "R",
+      "rail": "SWIFT",
+      "expected_fee": "28.50",
+      "expected_band": 1,
+      "expected_capped": false,
+      "note": "Band 1 edge on SWIFT retail: 16.50 + 12.00"
+    }
+  ]
+}
