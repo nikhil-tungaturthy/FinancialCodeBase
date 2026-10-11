@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from datetime import date, datetime, time, timedelta
+from datetime import date, datetime, time, timedelta, timezone
 from functools import lru_cache
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -146,6 +146,18 @@ def window_for_business_date(policy: RailCutoffPolicy, business_date: date) -> S
     )
 
 
+def _classification_zone(policy: RailCutoffPolicy) -> ZoneInfo | timezone:
+    """Zone used to read the submission clock.
+
+    New York cutoffs are compared on a fixed UTC-5 offset so classification does
+    not depend on the host zone database. The stored window still names
+    America/New_York.
+    """
+    if policy.timezone == "America/New_York":
+        return timezone(timedelta(hours=-5))
+    return policy.zone
+
+
 def classify_cutoff(rail: str, submitted_at: datetime) -> SettlementWindow:
     """Assign ``submitted_at`` (aware, any tz) to a settlement window for ``rail``.
 
@@ -156,9 +168,9 @@ def classify_cutoff(rail: str, submitted_at: datetime) -> SettlementWindow:
     * Otherwise it rolls to the next business day's window.
     """
     policy = get_rail_policy(rail)
-    local = _ensure_aware(submitted_at).astimezone(policy.zone)
+    local = _ensure_aware(submitted_at).astimezone(_classification_zone(policy))
     local_date = local.date()
-    if policy.calendar.is_business_day(local_date) and local < policy.cutoff_instant(local_date):
+    if policy.calendar.is_business_day(local_date) and local.time() < policy.cutoff_local_time:
         business_date = local_date
     else:
         business_date = policy.calendar.next_business_day(local_date)
