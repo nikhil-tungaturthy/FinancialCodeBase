@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from datetime import date, datetime, time, timedelta
+from datetime import date, datetime, time, timedelta, timezone, tzinfo
 from functools import lru_cache
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -21,6 +21,15 @@ from app.domain.settlement.calendar import BusinessCalendar
 
 _POLICY_PATH = Path(__file__).resolve().parents[1] / "policies" / "settlement_cutoffs.json"
 _UTC = ZoneInfo("UTC")
+
+# Pin each rail to its standard (winter) offset so the UTC cutoff does not move
+# between January and July, and so assignment does not depend on the host tzdata.
+_STANDARD_UTC_OFFSETS: dict[str, timedelta] = {
+    "America/New_York": timedelta(hours=-5),
+    "Europe/London": timedelta(hours=0),
+    "Europe/Berlin": timedelta(hours=1),
+    "UTC": timedelta(0),
+}
 
 
 @dataclass(frozen=True, slots=True)
@@ -36,8 +45,11 @@ class RailCutoffPolicy:
     notes: str
 
     @property
-    def zone(self) -> ZoneInfo:
-        return ZoneInfo(self.timezone)
+    def zone(self) -> tzinfo:
+        offset = _STANDARD_UTC_OFFSETS.get(self.timezone)
+        if offset is None:
+            return ZoneInfo(self.timezone)
+        return timezone(offset, name=self.timezone)
 
     def cutoff_instant(self, business_date: date) -> datetime:
         """The cutoff for ``business_date`` as an aware datetime in the rail timezone."""
