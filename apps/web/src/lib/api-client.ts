@@ -9,7 +9,7 @@ export type QueryValue = string | number | boolean | null | undefined;
 export type QueryParams = Record<string, QueryValue | ReadonlyArray<string | number>>;
 
 export interface RequestOptions {
-  /** Query string parameters. Arrays are serialised as repeated keys (`status=A&status=B`). */
+  /** Query string parameters. Arrays are always serialised as repeated keys (`status=A&status=B`). */
   query?: QueryParams;
   /** Correlation id to forward; the API honours an inbound header and echoes it back. */
   correlationId?: string;
