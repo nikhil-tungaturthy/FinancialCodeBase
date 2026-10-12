@@ -46,7 +46,7 @@ Scenario clock: `MF_SCENARIO_NOW` (default `2026-03-18T18:40:00Z`). Business cod
 - Add tests next to the behaviour you change. `make test-api` runs pytest for the API, batch jobs, and legacy references.
 - Do not put presenter answer keys, oracles, or demo-kit files in this repository.
 - Demo identity is `X-Demo-User`. Do not replace it with a fake production auth stack.
-- Cloud agents: `make setup && make seed && make test` is enough. No secrets are required for the core app.
+- Cloud agents boot with workspace dependencies, GnuCOBOL, Playwright Chromium, and a seeded `data/meridian_flow.db`. The API listens on port 8000 and the desk on port 5173; `make ready` checks both. No secrets are required. Run `make setup` again only when dependencies change.
 
 ## Tickets
 
