@@ -655,6 +655,17 @@ export interface LedgerListParams extends PageParams {
   journal_ref?: string;
 }
 
+export type DiscrepancyKind = 'MISSING' | 'DUPLICATE' | 'AMOUNT_MISMATCH';
+
+export interface ReconciliationDiscrepancy {
+  kind: DiscrepancyKind;
+  payment_ref: string | null;
+  settlement_entry_ref: string | null;
+  ledger_entry_refs: string[];
+  expected_amount: DecimalString;
+  recorded_amount: DecimalString;
+}
+
 export interface ReconciliationResult {
   run_ref: string;
   batch_ref: string;
@@ -666,6 +677,7 @@ export interface ReconciliationResult {
   recorded_total: DecimalString;
   variance: DecimalString;
   unmatched_refs: string[];
+  discrepancies: ReconciliationDiscrepancy[];
   input_hash: string;
   notes: string | null;
 }

@@ -38,6 +38,46 @@ def test_seed_verifies_and_serves_the_hero_and_discrepancy(
     assert Decimal(batch["batch"]["variance"]) == Decimal("18450.00")
     assert batch["reconciliation"]["run_ref"] == "RR-000061"
     assert batch["reconciliation"]["unmatched_refs"] == ["LE-002448", "LE-002452"]
+    assert batch["reconciliation"]["discrepancies"] == [
+        {
+            "kind": "DUPLICATE",
+            "payment_ref": "MGB-PAY-5143",
+            "settlement_entry_ref": "SE-000388",
+            "ledger_entry_refs": ["LE-002448", "LE-002452"],
+            "expected_amount": "18450.00",
+            "recorded_amount": "36900.00",
+        }
+    ]
+
+    replay = client.post(
+        "/api/v1/settlement/batches/SB-20260317-SEPA-02/reconcile",
+        headers={"X-Demo-User": "aisha.bello"},
+    )
+    again = client.post(
+        "/api/v1/settlement/batches/SB-20260317-SEPA-02/reconcile",
+        headers={"X-Demo-User": "aisha.bello"},
+    )
+    assert replay.status_code == 200
+    assert again.status_code == 200
+    assert again.json()["run_ref"] == replay.json()["run_ref"]
+    assert again.json()["discrepancies"][0]["kind"] == "DUPLICATE"
+    assert again.json()["unmatched_refs"] == ["LE-002448", "LE-002452"]
+
+    audit = client.get(
+        "/api/v1/audit",
+        params={
+            "entity_ref": "SB-20260317-SEPA-02",
+            "action": "RECONCILIATION_RUN",
+            "page_size": 50,
+        },
+    ).json()
+    recon_events = [item for item in audit["items"] if item["action"] == "RECONCILIATION_RUN"]
+    assert recon_events
+    assert all(
+        item["metadata"]["discrepancy_counts"]
+        == {"MISSING": 0, "DUPLICATE": 1, "AMOUNT_MISMATCH": 0}
+        for item in recon_events
+    )
 
     windows = client.get("/api/v1/settlement/windows").json()["windows"]
     wire = next(item for item in windows if item["rail"] == "WIRE_USD")

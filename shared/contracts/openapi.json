@@ -1,0 +1,3276 @@
+{
+  "components": {
+    "schemas": {
+      "AccountType": {
+        "enum": [
+          "OPERATING",
+          "SETTLEMENT",
+          "TREASURY",
+          "PERSONAL"
+        ],
+        "title": "AccountType",
+        "type": "string"
+      },
+      "ApprovalDecisionOut": {},
+      "ApprovalDecisionRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "decision": {
+            "$ref": "#/components/schemas/ApprovalDecisionValue"
+          },
+          "rationale": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Rationale",
+            "type": "string"
+          }
+        },
+        "required": [
+          "decision",
+          "rationale"
+        ],
+        "title": "ApprovalDecisionRequest",
+        "type": "object"
+      },
+      "ApprovalDecisionValue": {
+        "enum": [
+          "APPROVED",
+          "REJECTED"
+        ],
+        "title": "ApprovalDecisionValue",
+        "type": "string"
+      },
+      "ApprovalDetail": {},
+      "ApprovalRiskLevel": {
+        "enum": [
+          "LOW",
+          "MEDIUM",
+          "HIGH",
+          "CRITICAL"
+        ],
+        "title": "ApprovalRiskLevel",
+        "type": "string"
+      },
+      "ApprovalStatus": {
+        "enum": [
+          "PENDING",
+          "APPROVED",
+          "REJECTED",
+          "EXPIRED"
+        ],
+        "title": "ApprovalStatus",
+        "type": "string"
+      },
+      "ApprovalSubjectType": {
+        "enum": [
+          "PAYMENT_EXCEPTION",
+          "FEE_ADJUSTMENT",
+          "PAYMENT_CANCELLATION"
+        ],
+        "title": "ApprovalSubjectType",
+        "type": "string"
+      },
+      "ApprovalSummary": {},
+      "AssignRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "assignee_username": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Assignee Username",
+            "type": "string"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          }
+        },
+        "required": [
+          "assignee_username"
+        ],
+        "title": "AssignRequest",
+        "type": "object"
+      },
+      "AuditActionsResponse": {},
+      "AuditEntityType": {
+        "enum": [
+          "PAYMENT",
+          "EXCEPTION",
+          "APPROVAL",
+          "SETTLEMENT_BATCH",
+          "RECONCILIATION",
+          "INCIDENT",
+          "POLICY",
+          "USER"
+        ],
+        "title": "AuditEntityType",
+        "type": "string"
+      },
+      "AuditEventOut": {},
+      "AvailableAction": {},
+      "AvailableOperation": {},
+      "BatchDetail": {},
+      "BatchStatus": {
+        "enum": [
+          "OPEN",
+          "CLOSED",
+          "SUBMITTED",
+          "SETTLED",
+          "RECONCILED",
+          "DISCREPANCY"
+        ],
+        "title": "BatchStatus",
+        "type": "string"
+      },
+      "BatchSummary": {},
+      "BeneficiaryVerificationStatus": {
+        "enum": [
+          "VERIFIED",
+          "UNVERIFIED",
+          "NAME_MISMATCH_FLAGGED"
+        ],
+        "title": "BeneficiaryVerificationStatus",
+        "type": "string"
+      },
+      "BusinessRuleCategory": {
+        "enum": [
+          "VALIDATION",
+          "LIMIT",
+          "CUTOFF",
+          "SCREENING",
+          "FEE",
+          "APPROVAL"
+        ],
+        "title": "BusinessRuleCategory",
+        "type": "string"
+      },
+      "BusinessRuleOut": {},
+      "CanDecide": {},
+      "CancelRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "title": "CancelRequest",
+        "type": "object"
+      },
+      "Channel": {
+        "enum": [
+          "PORTAL",
+          "API",
+          "FILE",
+          "BRANCH"
+        ],
+        "title": "Channel",
+        "type": "string"
+      },
+      "Currency": {
+        "enum": [
+          "USD",
+          "EUR",
+          "GBP",
+          "CHF",
+          "JPY",
+          "SGD"
+        ],
+        "title": "Currency",
+        "type": "string"
+      },
+      "CurrencyValue": {},
+      "CurrencyVariance": {},
+      "CustomerSegment": {
+        "enum": [
+          "RETAIL",
+          "CORPORATE",
+          "INSTITUTIONAL",
+          "INTERNAL"
+        ],
+        "title": "CustomerSegment",
+        "type": "string"
+      },
+      "DiscrepancyKind": {
+        "description": "Why a settlement entry and its principal credits do not match.",
+        "enum": [
+          "MISSING",
+          "DUPLICATE",
+          "AMOUNT_MISMATCH"
+        ],
+        "title": "DiscrepancyKind",
+        "type": "string"
+      },
+      "DiscrepancyOut": {},
+      "ExceptionAction": {
+        "enum": [
+          "REPAIR_AND_RELEASE",
+          "RELEASE_AS_IS",
+          "RETURN_TO_CUSTOMER",
+          "CANCEL_PAYMENT",
+          "ESCALATE"
+        ],
+        "title": "ExceptionAction",
+        "type": "string"
+      },
+      "ExceptionActionRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "$ref": "#/components/schemas/ExceptionAction"
+          },
+          "justification": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Justification",
+            "type": "string"
+          },
+          "repaired_beneficiary_name": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Repaired Beneficiary Name"
+          }
+        },
+        "required": [
+          "action",
+          "justification"
+        ],
+        "title": "ExceptionActionRequest",
+        "type": "object"
+      },
+      "ExceptionActionResponse": {},
+      "ExceptionApprovalRef": {},
+      "ExceptionAssignmentOut": {},
+      "ExceptionDetail": {},
+      "ExceptionInstructionSnippet": {},
+      "ExceptionNoteOut": {},
+      "ExceptionPaymentContext": {},
+      "ExceptionPolicyDocument": {},
+      "ExceptionQueueItem": {},
+      "ExceptionRecord": {},
+      "ExceptionResolutionOut": {},
+      "ExceptionSeverity": {
+        "description": "Severity scale shared by exceptions, validation results and business rules.",
+        "enum": [
+          "LOW",
+          "MEDIUM",
+          "HIGH",
+          "CRITICAL"
+        ],
+        "title": "ExceptionSeverity",
+        "type": "string"
+      },
+      "ExceptionStatus": {
+        "enum": [
+          "OPEN",
+          "IN_REVIEW",
+          "PENDING_APPROVAL",
+          "ESCALATED",
+          "RESOLVED",
+          "CANCELLED"
+        ],
+        "title": "ExceptionStatus",
+        "type": "string"
+      },
+      "ExceptionSummaryResponse": {},
+      "FeeOut": {},
+      "FeeScheduleOut": {},
+      "FeeSource": {
+        "enum": [
+          "MODERN",
+          "LEGACY_FEECALC01"
+        ],
+        "title": "FeeSource",
+        "type": "string"
+      },
+      "FeeType": {
+        "enum": [
+          "FLAT",
+          "FLAT_PLUS_BPS"
+        ],
+        "title": "FeeType",
+        "type": "string"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "HealthResponse": {},
+      "HighPriorityItem": {},
+      "IncidentDetail": {},
+      "IncidentOut": {},
+      "IncidentSeverity": {
+        "enum": [
+          "SEV1",
+          "SEV2",
+          "SEV3",
+          "SEV4"
+        ],
+        "title": "IncidentSeverity",
+        "type": "string"
+      },
+      "IncidentStatus": {
+        "enum": [
+          "OPEN",
+          "INVESTIGATING",
+          "MITIGATED",
+          "RESOLVED"
+        ],
+        "title": "IncidentStatus",
+        "type": "string"
+      },
+      "LedgerDirection": {
+        "enum": [
+          "DEBIT",
+          "CREDIT"
+        ],
+        "title": "LedgerDirection",
+        "type": "string"
+      },
+      "LedgerEntryOut": {},
+      "LedgerLeg": {
+        "enum": [
+          "PRINCIPAL",
+          "FEE"
+        ],
+        "title": "LedgerLeg",
+        "type": "string"
+      },
+      "NoteRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "body": {
+            "maxLength": 4000,
+            "minLength": 1,
+            "title": "Body",
+            "type": "string"
+          },
+          "note_type": {
+            "$ref": "#/components/schemas/NoteType",
+            "default": "COMMENT"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "title": "NoteRequest",
+        "type": "object"
+      },
+      "NoteType": {
+        "enum": [
+          "COMMENT",
+          "EVIDENCE",
+          "SYSTEM"
+        ],
+        "title": "NoteType",
+        "type": "string"
+      },
+      "OverviewResponse": {},
+      "Page_ApprovalSummary_": {},
+      "Page_AuditEventOut_": {},
+      "Page_BatchSummary_": {},
+      "Page_ExceptionQueueItem_": {},
+      "Page_LedgerEntryOut_": {},
+      "Page_PaymentSummary_": {},
+      "Page_UserOut_": {},
+      "PaymentAccountRef": {},
+      "PaymentBeneficiaryRef": {},
+      "PaymentCustomerRef": {},
+      "PaymentDetail": {},
+      "PaymentEventOut": {},
+      "PaymentEventType": {
+        "enum": [
+          "CREATED",
+          "VALIDATION_STARTED",
+          "VALIDATION_PASSED",
+          "VALIDATION_FAILED",
+          "HELD",
+          "EXCEPTION_RAISED",
+          "REPAIRED",
+          "APPROVAL_REQUESTED",
+          "APPROVED",
+          "RELEASED",
+          "PROCESSING",
+          "SUBMITTED_TO_RAIL",
+          "PENDING_SETTLEMENT",
+          "SETTLED",
+          "RECONCILED",
+          "FAILED",
+          "CANCELLED",
+          "REJECTED",
+          "NOTE"
+        ],
+        "title": "PaymentEventType",
+        "type": "string"
+      },
+      "PaymentExceptionRef": {},
+      "PaymentInstructionOut": {},
+      "PaymentPriority": {
+        "enum": [
+          "NORMAL",
+          "HIGH",
+          "URGENT"
+        ],
+        "title": "PaymentPriority",
+        "type": "string"
+      },
+      "PaymentRecord": {},
+      "PaymentSettlementOut": {},
+      "PaymentStatus": {
+        "enum": [
+          "CREATED",
+          "VALIDATING",
+          "APPROVED",
+          "HELD",
+          "PROCESSING",
+          "PENDING_SETTLEMENT",
+          "SETTLED",
+          "RECONCILED",
+          "FAILED",
+          "CANCELLED",
+          "REJECTED"
+        ],
+        "title": "PaymentStatus",
+        "type": "string"
+      },
+      "PaymentSummary": {},
+      "PostingSource": {
+        "enum": [
+          "PAYMENT_ENGINE",
+          "FEE_ENGINE",
+          "LEGACY_BATCH",
+          "MANUAL"
+        ],
+        "title": "PostingSource",
+        "type": "string"
+      },
+      "QuickLink": {},
+      "Rail": {
+        "enum": [
+          "WIRE_USD",
+          "ACH_USD",
+          "SEPA_EUR",
+          "CHAPS_GBP",
+          "SWIFT_INTL",
+          "INTERNAL_BOOK"
+        ],
+        "title": "Rail",
+        "type": "string"
+      },
+      "ReadyResponse": {},
+      "ReasonPolicy": {},
+      "ReconciliationResultOut": {},
+      "ReconciliationStatus": {
+        "enum": [
+          "MATCHED",
+          "UNMATCHED",
+          "NOT_RUN"
+        ],
+        "title": "ReconciliationStatus",
+        "type": "string"
+      },
+      "ReconciliationSummary": {},
+      "ResolutionCode": {
+        "enum": [
+          "REPAIRED_RELEASED",
+          "RELEASED_AS_IS",
+          "RETURNED",
+          "CANCELLED",
+          "ESCALATED",
+          "REJECTED_BY_APPROVER"
+        ],
+        "title": "ResolutionCode",
+        "type": "string"
+      },
+      "RiskTier": {
+        "enum": [
+          "LOW",
+          "MEDIUM",
+          "HIGH"
+        ],
+        "title": "RiskTier",
+        "type": "string"
+      },
+      "Role": {
+        "enum": [
+          "ANALYST",
+          "SUPERVISOR",
+          "PAYMENTS_MANAGER",
+          "RISK_OFFICER",
+          "ENGINEER",
+          "READONLY"
+        ],
+        "title": "Role",
+        "type": "string"
+      },
+      "ScenarioMeta": {},
+      "SettlementCutoffPolicy": {},
+      "SettlementCutoffPolicyDocument": {},
+      "SettlementEntryOut": {},
+      "SettlementEntryStatus": {
+        "enum": [
+          "PENDING",
+          "SETTLED",
+          "FAILED",
+          "RETURNED"
+        ],
+        "title": "SettlementEntryStatus",
+        "type": "string"
+      },
+      "SettlementWindowStatus": {},
+      "SettlementWindowsResponse": {},
+      "TimelineEntry": {},
+      "TrendPoint": {},
+      "UserOut": {},
+      "UserRef": {},
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      },
+      "ValidationOutcome": {
+        "enum": [
+          "PASS",
+          "FAIL",
+          "WARN",
+          "SKIPPED"
+        ],
+        "title": "ValidationOutcome",
+        "type": "string"
+      },
+      "ValidationResultOut": {}
+    }
+  },
+  "info": {
+    "description": "Global payments and exception operations for the fictional Meridian Global Bank. All data is synthetic; identity is a demo persona selected with the `X-Demo-User` header (not production authentication). Amounts are serialised as decimal strings and all timestamps are UTC.",
+    "title": "Meridian Flow API",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/approvals": {
+      "get": {
+        "operationId": "list_approvals_api_v1_approvals_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ApprovalStatus"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "title": "Page",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "required": false,
+            "schema": {
+              "default": 25,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Page Size",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ApprovalSummary_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Approvals",
+        "tags": [
+          "approvals"
+        ]
+      }
+    },
+    "/api/v1/approvals/{approval_ref}": {
+      "get": {
+        "operationId": "get_approval_api_v1_approvals__approval_ref__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "approval_ref",
+            "required": true,
+            "schema": {
+              "title": "Approval Ref",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Approval",
+        "tags": [
+          "approvals"
+        ]
+      }
+    },
+    "/api/v1/approvals/{approval_ref}/decision": {
+      "post": {
+        "operationId": "decide_api_v1_approvals__approval_ref__decision_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "approval_ref",
+            "required": true,
+            "schema": {
+              "title": "Approval Ref",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApprovalDecisionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Decide",
+        "tags": [
+          "approvals"
+        ]
+      }
+    },
+    "/api/v1/audit": {
+      "get": {
+        "operationId": "list_events_api_v1_audit_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "entity_type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/AuditEntityType"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Entity Type"
+            }
+          },
+          {
+            "in": "query",
+            "name": "entity_ref",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Entity Ref"
+            }
+          },
+          {
+            "in": "query",
+            "name": "action",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Action"
+            }
+          },
+          {
+            "in": "query",
+            "name": "actor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Actor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "correlation_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Correlation Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "date_from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date From"
+            }
+          },
+          {
+            "in": "query",
+            "name": "date_to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date To"
+            }
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Search"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "title": "Page",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Page Size",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_AuditEventOut_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Events",
+        "tags": [
+          "audit"
+        ]
+      }
+    },
+    "/api/v1/audit/actions": {
+      "get": {
+        "operationId": "actions_api_v1_audit_actions_get",
+        "parameters": [
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditActionsResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Actions",
+        "tags": [
+          "audit"
+        ]
+      }
+    },
+    "/api/v1/audit/{event_id}": {
+      "get": {
+        "operationId": "get_event_api_v1_audit__event_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditEventOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Event",
+        "tags": [
+          "audit"
+        ]
+      }
+    },
+    "/api/v1/exceptions": {
+      "get": {
+        "operationId": "list_exceptions_api_v1_exceptions_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ExceptionStatus"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "severity",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ExceptionSeverity"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Severity"
+            }
+          },
+          {
+            "in": "query",
+            "name": "assigned_to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Assigned To"
+            }
+          },
+          {
+            "in": "query",
+            "name": "queue",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Queue"
+            }
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Search"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "default": "due_by",
+              "enum": [
+                "opened_at",
+                "due_by",
+                "severity",
+                "amount",
+                "status",
+                "exception_ref"
+              ],
+              "title": "Sort",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "required": false,
+            "schema": {
+              "default": "asc",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "title": "Order",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "title": "Page",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "required": false,
+            "schema": {
+              "default": 25,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Page Size",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ExceptionQueueItem_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Exceptions",
+        "tags": [
+          "exceptions"
+        ]
+      }
+    },
+    "/api/v1/exceptions/summary": {
+      "get": {
+        "operationId": "summary_api_v1_exceptions_summary_get",
+        "parameters": [
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionSummaryResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Summary",
+        "tags": [
+          "exceptions"
+        ]
+      }
+    },
+    "/api/v1/exceptions/{exception_ref}": {
+      "get": {
+        "operationId": "get_exception_api_v1_exceptions__exception_ref__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "exception_ref",
+            "required": true,
+            "schema": {
+              "title": "Exception Ref",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Exception",
+        "tags": [
+          "exceptions"
+        ]
+      }
+    },
+    "/api/v1/exceptions/{exception_ref}/actions": {
+      "post": {
+        "operationId": "act_api_v1_exceptions__exception_ref__actions_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "exception_ref",
+            "required": true,
+            "schema": {
+              "title": "Exception Ref",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExceptionActionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionActionResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Act",
+        "tags": [
+          "exceptions"
+        ]
+      }
+    },
+    "/api/v1/exceptions/{exception_ref}/assign": {
+      "post": {
+        "operationId": "assign_api_v1_exceptions__exception_ref__assign_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "exception_ref",
+            "required": true,
+            "schema": {
+              "title": "Exception Ref",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Assign",
+        "tags": [
+          "exceptions"
+        ]
+      }
+    },
+    "/api/v1/exceptions/{exception_ref}/notes": {
+      "post": {
+        "operationId": "notes_api_v1_exceptions__exception_ref__notes_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "exception_ref",
+            "required": true,
+            "schema": {
+              "title": "Exception Ref",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Notes",
+        "tags": [
+          "exceptions"
+        ]
+      }
+    },
+    "/api/v1/health": {
+      "get": {
+        "operationId": "health_api_v1_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Liveness probe",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/api/v1/incidents": {
+      "get": {
+        "operationId": "list_incidents_api_v1_incidents_get",
+        "parameters": [
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/IncidentOut"
+                  },
+                  "title": "Response List Incidents Api V1 Incidents Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Incidents",
+        "tags": [
+          "incidents"
+        ]
+      }
+    },
+    "/api/v1/incidents/{incident_ref}": {
+      "get": {
+        "operationId": "get_incident_api_v1_incidents__incident_ref__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "incident_ref",
+            "required": true,
+            "schema": {
+              "title": "Incident Ref",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncidentDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Incident",
+        "tags": [
+          "incidents"
+        ]
+      }
+    },
+    "/api/v1/ledger/entries": {
+      "get": {
+        "operationId": "entries_api_v1_ledger_entries_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "payment_ref",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Payment Ref"
+            }
+          },
+          {
+            "in": "query",
+            "name": "batch_ref",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Batch Ref"
+            }
+          },
+          {
+            "in": "query",
+            "name": "journal_ref",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Journal Ref"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "title": "Page",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Page Size",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_LedgerEntryOut_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Entries",
+        "tags": [
+          "ledger"
+        ]
+      }
+    },
+    "/api/v1/meta/scenario": {
+      "get": {
+        "operationId": "scenario_api_v1_meta_scenario_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScenarioMeta"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Scenario",
+        "tags": [
+          "meta"
+        ]
+      }
+    },
+    "/api/v1/overview": {
+      "get": {
+        "operationId": "overview_api_v1_overview_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "date",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date"
+            }
+          },
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OverviewResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Overview",
+        "tags": [
+          "overview"
+        ]
+      }
+    },
+    "/api/v1/payments": {
+      "get": {
+        "operationId": "list_payments_api_v1_payments_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "search",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Search"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/PaymentStatus"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "rail",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Rail"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Rail"
+            }
+          },
+          {
+            "in": "query",
+            "name": "currency",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Currency"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Currency"
+            }
+          },
+          {
+            "in": "query",
+            "name": "priority",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/PaymentPriority"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Priority"
+            }
+          },
+          {
+            "in": "query",
+            "name": "risk_tier",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/RiskTier"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Risk Tier"
+            }
+          },
+          {
+            "in": "query",
+            "name": "date_from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date From"
+            }
+          },
+          {
+            "in": "query",
+            "name": "date_to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date To"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "default": "created_at",
+              "enum": [
+                "created_at",
+                "amount",
+                "status",
+                "payment_ref",
+                "customer"
+              ],
+              "title": "Sort",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "required": false,
+            "schema": {
+              "default": "desc",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "title": "Order",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "title": "Page",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "required": false,
+            "schema": {
+              "default": 25,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Page Size",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_PaymentSummary_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Payments",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/api/v1/payments/{payment_ref}": {
+      "get": {
+        "operationId": "get_payment_api_v1_payments__payment_ref__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "payment_ref",
+            "required": true,
+            "schema": {
+              "title": "Payment Ref",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Payment",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/api/v1/payments/{payment_ref}/cancel": {
+      "post": {
+        "operationId": "cancel_api_v1_payments__payment_ref__cancel_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "payment_ref",
+            "required": true,
+            "schema": {
+              "title": "Payment Ref",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/CancelRequest"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Cancel",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/api/v1/payments/{payment_ref}/revalidate": {
+      "post": {
+        "operationId": "revalidate_payment_api_v1_payments__payment_ref__revalidate_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "payment_ref",
+            "required": true,
+            "schema": {
+              "title": "Payment Ref",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Revalidate Payment",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/api/v1/policies/business-rules": {
+      "get": {
+        "operationId": "business_rules_api_v1_policies_business_rules_get",
+        "parameters": [
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/BusinessRuleOut"
+                  },
+                  "title": "Response Business Rules Api V1 Policies Business Rules Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Business Rules",
+        "tags": [
+          "policies"
+        ]
+      }
+    },
+    "/api/v1/policies/exception-reasons": {
+      "get": {
+        "operationId": "exception_reasons_api_v1_policies_exception_reasons_get",
+        "parameters": [
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionPolicyDocument"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Exception Reasons",
+        "tags": [
+          "policies"
+        ]
+      }
+    },
+    "/api/v1/policies/fee-schedules": {
+      "get": {
+        "operationId": "fee_schedules_api_v1_policies_fee_schedules_get",
+        "parameters": [
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/FeeScheduleOut"
+                  },
+                  "title": "Response Fee Schedules Api V1 Policies Fee Schedules Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Fee Schedules",
+        "tags": [
+          "policies"
+        ]
+      }
+    },
+    "/api/v1/policies/settlement-cutoffs": {
+      "get": {
+        "operationId": "settlement_cutoffs_api_v1_policies_settlement_cutoffs_get",
+        "parameters": [
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettlementCutoffPolicyDocument"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Settlement Cutoffs",
+        "tags": [
+          "policies"
+        ]
+      }
+    },
+    "/api/v1/ready": {
+      "get": {
+        "operationId": "ready_api_v1_ready_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadyResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadyResponse"
+                }
+              }
+            },
+            "description": "Database unreachable or not seeded"
+          }
+        },
+        "summary": "Readiness probe",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/api/v1/reconciliation/summary": {
+      "get": {
+        "operationId": "summary_api_v1_reconciliation_summary_get",
+        "parameters": [
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconciliationSummary"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Summary",
+        "tags": [
+          "reconciliation"
+        ]
+      }
+    },
+    "/api/v1/settlement/batches": {
+      "get": {
+        "operationId": "list_batches_api_v1_settlement_batches_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/BatchStatus"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "rail",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Rail"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Rail"
+            }
+          },
+          {
+            "in": "query",
+            "name": "value_date",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Value Date"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "title": "Page",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "required": false,
+            "schema": {
+              "default": 25,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Page Size",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_BatchSummary_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Batches",
+        "tags": [
+          "settlement"
+        ]
+      }
+    },
+    "/api/v1/settlement/batches/{batch_ref}": {
+      "get": {
+        "operationId": "get_batch_api_v1_settlement_batches__batch_ref__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "batch_ref",
+            "required": true,
+            "schema": {
+              "title": "Batch Ref",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Batch",
+        "tags": [
+          "settlement"
+        ]
+      }
+    },
+    "/api/v1/settlement/batches/{batch_ref}/reconcile": {
+      "post": {
+        "operationId": "reconcile_batch_api_v1_settlement_batches__batch_ref__reconcile_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "batch_ref",
+            "required": true,
+            "schema": {
+              "title": "Batch Ref",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconciliationResultOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Reconcile Batch",
+        "tags": [
+          "settlement"
+        ]
+      }
+    },
+    "/api/v1/settlement/windows": {
+      "get": {
+        "operationId": "windows_api_v1_settlement_windows_get",
+        "parameters": [
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettlementWindowsResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Windows",
+        "tags": [
+          "settlement"
+        ]
+      }
+    },
+    "/api/v1/users": {
+      "get": {
+        "operationId": "list_users_api_v1_users_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "include_inactive",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Include Inactive",
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_UserOut_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Users",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v1/users/me": {
+      "get": {
+        "operationId": "me_api_v1_users_me_get",
+        "parameters": [
+          {
+            "description": "Demo persona username (not production auth). Defaults to the demo user.",
+            "in": "header",
+            "name": "X-Demo-User",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Demo persona username (not production auth). Defaults to the demo user.",
+              "title": "X-Demo-User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Me",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Liveness probe",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/ready": {
+      "get": {
+        "operationId": "ready_ready_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadyResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadyResponse"
+                }
+              }
+            },
+            "description": "Database unreachable or not seeded"
+          }
+        },
+        "summary": "Readiness probe",
+        "tags": [
+          "health"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "description": "Liveness and readiness probes.",
+      "name": "health"
+    },
+    {
+      "description": "Scenario clock, seed version and FX reference rates.",
+      "name": "meta"
+    },
+    {
+      "description": "Demo identities and the current persona.",
+      "name": "users"
+    },
+    {
+      "description": "Operations dashboard metrics.",
+      "name": "overview"
+    },
+    {
+      "description": "Payment search, detail and operations.",
+      "name": "payments"
+    },
+    {
+      "description": "Exception queue and workbench actions.",
+      "name": "exceptions"
+    },
+    {
+      "description": "Exception reason, cutoff, business rule and fee policies.",
+      "name": "policies"
+    },
+    {
+      "description": "Settlement batches, entries and windows.",
+      "name": "settlement"
+    },
+    {
+      "description": "General ledger postings.",
+      "name": "ledger"
+    },
+    {
+      "description": "Reconciliation summary.",
+      "name": "reconciliation"
+    },
+    {
+      "description": "Approval requests and decisions.",
+      "name": "approvals"
+    },
+    {
+      "description": "Audit trail search.",
+      "name": "audit"
+    },
+    {
+      "description": "Operational incidents and evidence.",
+      "name": "incidents"
+    }
+  ]
+}

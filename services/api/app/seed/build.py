@@ -45,7 +45,13 @@ from app.domain.money.fx import to_usd
 from app.domain.payments.lifecycle import DEFAULT_EVENT_TYPE_FOR_STATUS
 from app.domain.payments.references import channel_for_payment_ref
 from app.domain.policies.reasons import reason_by_code
-from app.domain.reconciliation.compare import CreditFact, EntryFact, compare_batch
+from app.domain.reconciliation.compare import (
+    CreditFact,
+    EntryFact,
+    compare_batch,
+    discrepancy_counts,
+    serialize_discrepancies,
+)
 from app.domain.settlement.cutoff import classify_cutoff, get_rail_policy, window_for_business_date
 from app.domain.validation.engine import ValidationFacts, evaluate, primary_failure
 from app.models.approvals import ApprovalDecision, ApprovalRequest
@@ -1228,6 +1234,7 @@ def _store_reconciliation(
             recorded_total=compared.recorded_total,  # type: ignore[attr-defined]
             variance=compared.variance,  # type: ignore[attr-defined]
             unmatched_refs=list(compared.unmatched_refs),  # type: ignore[attr-defined]
+            discrepancies=serialize_discrepancies(compared.discrepancies),  # type: ignore[attr-defined]
             input_hash=compared.input_hash,  # type: ignore[attr-defined]
             notes="Baseline reconciliation of principal credits against settlement entries.",
         )
@@ -1242,6 +1249,11 @@ def _store_reconciliation(
         summary=f"Reconciliation {run_reference} recorded variance {compared.variance}",  # type: ignore[attr-defined]
         correlation_id=batch.correlation_id,
         occurred_at=run_at,
+        metadata={
+            "run_ref": run_reference,
+            "input_hash": compared.input_hash,  # type: ignore[attr-defined]
+            "discrepancy_counts": discrepancy_counts(compared.discrepancies),  # type: ignore[attr-defined]
+        },
         stable_key=f"recon|{run_reference}",
         source_service="meridian-batch",
     )

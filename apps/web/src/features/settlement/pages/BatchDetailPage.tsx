@@ -16,7 +16,12 @@ import { StatusPill } from '@/components/ui/StatusPill';
 import { useBatch } from '@/features/settlement/hooks';
 import { ApiError } from '@/lib/api-client';
 import { formatInteger, orDash } from '@/lib/format';
-import type { LedgerEntry, SettlementEntry } from '@/types/api';
+import type {
+  DiscrepancyKind,
+  LedgerEntry,
+  ReconciliationDiscrepancy,
+  SettlementEntry,
+} from '@/types/api';
 import { RAIL_LABELS } from '@/types/domain';
 
 function MatchedFlag({ matched }: { matched: boolean | null }) {
@@ -38,6 +43,70 @@ function MatchedFlag({ matched }: { matched: boolean | null }) {
       <X className="size-3.5" aria-hidden="true" />
       <span className="sr-only">Unmatched</span>
     </span>
+  );
+}
+
+const DISCREPANCY_KIND_LABELS: Record<DiscrepancyKind, string> = {
+  MISSING: 'Missing',
+  DUPLICATE: 'Duplicate',
+  AMOUNT_MISMATCH: 'Amount mismatch',
+};
+
+function InvestigationList({
+  items,
+  currency,
+}: {
+  items: ReconciliationDiscrepancy[];
+  currency: string;
+}) {
+  if (items.length === 0) {
+    return null;
+  }
+  return (
+    <div className="mt-4 border-t border-slate-100 pt-3" data-testid="batch-investigation">
+      <p className="text-[11px] font-medium tracking-wide text-slate-500 uppercase">
+        Investigation
+      </p>
+      <ul className="mt-1.5 divide-y divide-slate-100">
+        {items.map((item) => {
+          const key = [
+            item.kind,
+            item.settlement_entry_ref ?? '',
+            item.payment_ref ?? '',
+            item.ledger_entry_refs.join(','),
+          ].join(':');
+          return (
+            <li key={key} className="py-2 text-13">
+              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                <span className="font-medium text-slate-800">
+                  {DISCREPANCY_KIND_LABELS[item.kind]}
+                </span>
+                <span className="text-xs text-slate-500">
+                  Expected{' '}
+                  <Money amount={item.expected_amount} currency={currency} muteCode />
+                  {' · '}
+                  Recorded{' '}
+                  <Money amount={item.recorded_amount} currency={currency} muteCode />
+                </span>
+              </div>
+              <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+                {item.payment_ref ? (
+                  <RefLink to={`/payments/${item.payment_ref}`}>{item.payment_ref}</RefLink>
+                ) : null}
+                {item.settlement_entry_ref ? (
+                  <span className="font-mono text-slate-700">{item.settlement_entry_ref}</span>
+                ) : null}
+                {item.ledger_entry_refs.map((ref) => (
+                  <span key={ref} className="font-mono text-red-700">
+                    {ref}
+                  </span>
+                ))}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }
 
@@ -348,6 +417,10 @@ export default function BatchDetailPage() {
                       fullWidth: true,
                     },
                   ]}
+                />
+                <InvestigationList
+                  items={reconciliation.discrepancies}
+                  currency={batch.currency}
                 />
                 {reconciliation.unmatched_refs.length > 0 && (
                   <div className="mt-4 border-t border-slate-100 pt-3">

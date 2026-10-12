@@ -10,6 +10,7 @@ from pydantic import Field
 from app.models.enums import (
     BatchStatus,
     Currency,
+    DiscrepancyKind,
     Rail,
     ReconciliationStatus,
     SettlementEntryStatus,
@@ -51,6 +52,15 @@ class SettlementEntryOut(ApiModel):
     sequence: int
 
 
+class DiscrepancyOut(ApiModel):
+    kind: DiscrepancyKind
+    payment_ref: str | None = None
+    settlement_entry_ref: str | None = None
+    ledger_entry_refs: list[str] = []
+    expected_amount: Money
+    recorded_amount: Money
+
+
 class ReconciliationResultOut(ApiModel):
     run_ref: str
     batch_ref: str
@@ -63,6 +73,7 @@ class ReconciliationResultOut(ApiModel):
     variance: Money
     currency: Currency
     unmatched_refs: list[str] = []
+    discrepancies: list[DiscrepancyOut] = []
     input_hash: str
     notes: str | None = None
 

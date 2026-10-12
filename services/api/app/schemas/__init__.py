@@ -56,6 +56,7 @@ from app.schemas.policies import (
 from app.schemas.settlement import (
     BatchDetail,
     BatchSummary,
+    DiscrepancyOut,
     ReconcileRequest,
     ReconciliationResultOut,
     ReconciliationSummary,
@@ -80,6 +81,7 @@ __all__ = [
     "BatchSummary",
     "BusinessRuleOut",
     "CanDecide",
+    "DiscrepancyOut",
     "ExceptionActionRequest",
     "ExceptionActionResponse",
     "ExceptionDetail",

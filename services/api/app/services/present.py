@@ -58,6 +58,7 @@ from app.schemas.payments import (
 from app.schemas.settlement import (
     BatchDetail,
     BatchSummary,
+    DiscrepancyOut,
     ReconciliationResultOut,
     SettlementEntryOut,
 )
@@ -376,6 +377,7 @@ def reconciliation_out(
         variance=result.variance,
         currency=batch.currency,
         unmatched_refs=list(result.unmatched_refs),
+        discrepancies=[DiscrepancyOut.model_validate(item) for item in result.discrepancies],
         input_hash=result.input_hash,
         notes=result.notes,
     )
