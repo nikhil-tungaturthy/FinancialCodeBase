@@ -225,6 +225,14 @@ class ReconciliationStatus(StrEnum):
     NOT_RUN = "NOT_RUN"
 
 
+class DiscrepancyKind(StrEnum):
+    """Why a settlement entry and its principal credits do not match."""
+
+    MISSING = "MISSING"
+    DUPLICATE = "DUPLICATE"
+    AMOUNT_MISMATCH = "AMOUNT_MISMATCH"
+
+
 class IncidentSeverity(StrEnum):
     SEV1 = "SEV1"
     SEV2 = "SEV2"

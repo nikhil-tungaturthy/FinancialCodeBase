@@ -18,7 +18,14 @@ from app.core.ids import approval_ref, reconciliation_run_ref
 from app.domain.exceptions.classification import classify_exception
 from app.domain.payments.lifecycle import DEFAULT_EVENT_TYPE_FOR_STATUS, assert_transition
 from app.domain.policies.reasons import reason_by_code
-from app.domain.reconciliation.compare import CompareResult, CreditFact, EntryFact, compare_batch
+from app.domain.reconciliation.compare import (
+    CompareResult,
+    CreditFact,
+    EntryFact,
+    compare_batch,
+    discrepancy_counts,
+    serialize_discrepancies,
+)
 from app.domain.validation.engine import RuleOutcome, ValidationFacts, evaluate, primary_failure
 from app.models.approvals import ApprovalDecision, ApprovalRequest
 from app.models.audit import AuditEvent
@@ -727,9 +734,17 @@ def reconcile(
             f"Batch {batch.batch_ref} is {batch.status.value} and cannot be reconciled"
         )
     result = compare_batch(_entry_facts(batch), _credit_facts(batch))
-    latest = batch.reconciliation_results[-1] if batch.reconciliation_results else None
-    if latest is not None and latest.input_hash == result.input_hash:
-        return latest
+    existing = session.scalar(
+        select(ReconciliationResult)
+        .where(
+            ReconciliationResult.batch_id == batch.id,
+            ReconciliationResult.input_hash == result.input_hash,
+        )
+        .order_by(ReconciliationResult.id.desc())
+        .limit(1)
+    )
+    if existing is not None:
+        return existing
     reference = _next_numbered(session, ReconciliationResult.run_ref, "RR-", reconciliation_run_ref)
     row = ReconciliationResult(
         run_ref=reference,
@@ -742,6 +757,7 @@ def reconcile(
         recorded_total=result.recorded_total,
         variance=result.variance,
         unmatched_refs=result.unmatched_refs,
+        discrepancies=serialize_discrepancies(result.discrepancies),
         input_hash=result.input_hash,
         notes=notes,
     )
@@ -763,7 +779,11 @@ def reconcile(
             f"({result.unmatched_count} unmatched)"
         ),
         correlation_id=batch.correlation_id,
-        metadata={"run_ref": reference, "input_hash": result.input_hash},
+        metadata={
+            "run_ref": reference,
+            "input_hash": result.input_hash,
+            "discrepancy_counts": discrepancy_counts(result.discrepancies),
+        },
     )
     session.flush()
     return row

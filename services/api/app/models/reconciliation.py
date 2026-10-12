@@ -30,6 +30,7 @@ class ReconciliationResult(Base):
     recorded_total: Mapped[Decimal]
     variance: Mapped[Decimal]
     unmatched_refs: Mapped[JSONList] = mapped_column(default=list)
+    discrepancies: Mapped[JSONList] = mapped_column(default=list)
     input_hash: Mapped[str] = mapped_column(String(64), index=True)
     notes: Mapped[str | None] = mapped_column(Text)
 

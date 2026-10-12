@@ -18,6 +18,28 @@ than one batch in a run.
 `DISCREPANCY`. Do not move the batch to `RECONCILED` by hand. Every action you take is recorded
 as an audit event or an incident note.
 
+## What the reconciliation job does and does not do
+
+The comparison still matches a settlement entry only when that payment has exactly one
+principal credit of the same amount. `unmatched_refs` is unchanged, and `input_hash` is still
+a digest of the settlement entries and principal credits only. Replaying those same inputs
+returns the existing reconciliation row and does not write another audit event.
+
+Each break is stored on the run as `discrepancies` and shown on the batch detail page:
+
+- `MISSING` — a settlement entry with no principal credit, or a principal credit whose payment
+  has no settlement entry (`settlement_entry_ref` is null). Orphan credits appear only in this
+  list; they are not added to `unmatched_refs`.
+- `DUPLICATE` — more than one principal credit for the payment. `SB-20260317-SEPA-02` /
+  `MGB-PAY-5143` is this case: `SE-000388` with `LE-002448` and `LE-002452`, expected 18,450.00
+  EUR, recorded 36,900.00 EUR.
+- `AMOUNT_MISMATCH` — exactly one principal credit, and the amount differs from the settlement
+  entry.
+
+The job does not post or reverse journals, net fee legs, call a payment network, or change
+payment status. A later reversing journal that adds another principal credit does not clear a
+duplicate; the matcher does not net reversals.
+
 ---
 
 ## 1. Acknowledge and scope (first 10 minutes)
@@ -138,9 +160,10 @@ journal through `2900-SUSPENSE-GBP`).
 
 ## Reference
 
-- Reconciliation semantics (baseline): a settlement entry is matched when exactly one ledger
-  principal credit with an equal amount exists for its payment; everything else is listed in
-  `unmatched_refs`; `variance = recorded_total - expected_total`.
+- Reconciliation semantics: a settlement entry is matched when exactly one ledger principal
+  credit with an equal amount exists for its payment; everything else is listed in
+  `unmatched_refs`; `variance = recorded_total - expected_total`. The same run's
+  `discrepancies` classify each break as `MISSING`, `DUPLICATE`, or `AMOUNT_MISMATCH`.
 - Ledger account codes: `1100-CUST-{CCY}` customer deposits, `2010-NOSTRO-{CCY}` nostro,
   `4100-FEE-INCOME-{CCY}` fee income, `2900-SUSPENSE-{CCY}` manual corrections.
 - Evidence bundle layout: `shared/fixtures/incidents/README.md`.
