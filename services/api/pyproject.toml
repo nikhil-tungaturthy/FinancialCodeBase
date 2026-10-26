@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Meridian Flow API — payments, exceptions, settlement, reconciliation, approvals, audit"
 requires-python = ">=3.12,<3.13"
 dependencies = [
-  "fastapi>=0.143,<0.144",
+  "fastapi>=0.143,<0.162",
   "uvicorn[standard]>=0.54,<0.55",
   "pydantic>=2.14,<3",
   "pydantic-settings>=2.15,<3",
